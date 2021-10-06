@@ -2,6 +2,17 @@ const http = require("http");
 const fs = require("fs");
 
 const port = 3000;
+const renderPage = (path, res) => {
+  fs.readFile(path, (err, data) => {
+    if (err) {
+      res.writeHead(404);
+      res.write("file not found");
+    } else {
+      res.write(data);
+    }
+    res.end();
+  });
+};
 
 http
   .createServer((req, res) => {
@@ -12,19 +23,9 @@ http
     const url = req.url;
     if (url === "/about") {
       console.log(url);
-      res.write("Ini halaman about loh");
-      res.end();
+      renderPage("./about.html", res);
     } else {
-      //   res.write("halo gaes");
-      fs.readFile("./index.html", (err, data) => {
-        if (err) {
-          res.writeHead(404);
-          res.write("file not found");
-        } else {
-          res.write(data);
-        }
-        res.end();
-      });
+      renderPage("./index.html", res);
     }
   })
   .listen(port, () => {
